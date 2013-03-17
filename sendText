@@ -1,0 +1,11 @@
+#!/usr/bin/python
+
+import sys
+import lib
+import string
+
+overlay="Video Overlay 1"
+
+if __name__ == "__main__":
+	lib.sendTextToOverlay(' '.join(sys.argv[1:]),overlay)
+

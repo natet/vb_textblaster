@@ -1,0 +1,36 @@
+#!/usr/bin/python
+
+import sys
+import lib
+import string
+import argparse
+
+overlay="Video Overlay 2"
+
+if __name__ == "__main__":
+	parser = argparse.ArgumentParser(description="Send hymn text to vidblaster")
+	parser.add_argument('--overlay','-o',help="Overlay to send text to",default='overlay')
+	parser.add_argument('--file','-f',help="File containing text of hymn",required=True)
+	args = parser.parse_args()
+
+	#text = open(sys.argv[1]).readlines()
+	text = open(args.file).readlines()
+
+	if (len(text)%2!=0):
+		text.append("");
+	text = [i.rstrip().upper() for i in text]
+	t = zip(text[0::2],text[1::2])
+	chunks = ["\\n".join(i) for i in t]
+	chunks = [string.replace(i,",","\\x2c") for i in chunks]
+
+	lib.sendTextToOverlay("\\x20",overlay)
+	lib.turnOverlay(True,overlay)
+
+	for c in chunks:
+		print "Press return to send Next Line: ",c
+		inp = raw_input()
+		lib.sendTextToOverlay(c,overlay)
+
+	print "Press enter for clear song"
+	inp = raw_input()
+	lib.turnOverlay(False,overlay)

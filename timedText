@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+import sys
+import lib
+import string
+import time
+
+overlay="Video Overlay 1"
+
+if __name__ == "__main__":
+	lib.sendTextToOverlay("\\x20",overlay)
+	lib.turnOverlay(True,overlay)
+	i = ' '.join(sys.argv[2:])
+	i = string.replace(i,",","\\x2c")
+	lib.sendTextToOverlay(i,overlay)
+	time.sleep(int(sys.argv[1]))
+
+	lib.turnOverlay(False,overlay)
