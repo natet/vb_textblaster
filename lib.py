@@ -2,19 +2,22 @@
 
 import socket 
 import sys
-
-port=9998
-ip="192.168.1.4"
-ip="10.146.143.33"
-
+import os
 
 
 class VidBlaster:
 	def __init__(self,ip='127.0.0.1',port=9998):
-		self.ip = ip
-		self.port =port
+		try:
+			self.ip = os.environ["VBHOST"]
+		except KeyError:
+			self.ip = ip
+		try:
+			self.port = os.environ["VBPORT"]
+		except KeyError:
+			self.port =port
 
-		self.sock = socket.create_connection((ip,port))
+		print "Connecting to ",self.ip,self.port
+		self.sock = socket.create_connection((self.ip,self.port))
 		print self.sock.recv(4096)
 
 	def sendCommand(self,cmd):
@@ -34,7 +37,7 @@ class VidBlaster:
 			o="off"
 		self.sendCommand("""apiwrite %s, %s, 1\n"""%(overlay,o))
 
-vb = VidBlaster(ip,port)
+vb = VidBlaster()
 
 # These functions exist to keep compatibility with the original scripts
 # because I ran out of time.

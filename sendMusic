@@ -13,7 +13,6 @@ if __name__ == "__main__":
 	parser.add_argument('--file','-f',help="File containing text of hymn",required=True)
 	args = parser.parse_args()
 
-	#text = open(sys.argv[1]).readlines()
 	text = open(args.file).readlines()
 
 	if (len(text)%2!=0):
@@ -26,10 +25,13 @@ if __name__ == "__main__":
 	lib.sendTextToOverlay("\\x20",overlay)
 	lib.turnOverlay(True,overlay)
 
-	for c in chunks:
-		print "Press return to send Next Line: ",c
-		inp = raw_input()
-		lib.sendTextToOverlay(c,overlay)
+	try:
+		for c in chunks:
+			print "Press return to send Next Line: ",c
+			inp = raw_input()
+			lib.sendTextToOverlay(c,overlay)
+	except KeyboardInterrupt:
+		lib.turnOverlay(False,overlay)
 
 	print "Press enter for clear song"
 	inp = raw_input()
