@@ -21,7 +21,6 @@ class VidBlaster:
 		print self.sock.recv(4096)
 
 	def sendCommand(self,cmd):
-
 		#print cmd
 		self.sock.send(cmd)
 		self.sock.recv(4096)
@@ -36,9 +35,7 @@ class VidBlaster:
 		else:
 			o="off"
 		self.sendCommand("""apiwrite %s, %s, 1\n"""%(overlay,o))
-
-vb = VidBlaster()
-
+#vb = VidBlaster()
 # These functions exist to keep compatibility with the original scripts
 # because I ran out of time.
 def sendCommand(cmd):

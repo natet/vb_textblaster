@@ -8,11 +8,12 @@ import time
 overlay="Video Overlay 1"
 
 if __name__ == "__main__":
-	lib.sendTextToOverlay("\\x20",overlay)
-	lib.turnOverlay(True,overlay)
+	vb = lib.VidBlaster()
+	vb.sendTextToOverlay("\\x20",overlay)
+	vb.turnOverlay(True,overlay)
 	i = ' '.join(sys.argv[2:])
 	i = string.replace(i,",","\\x2c")
-	lib.sendTextToOverlay(i,overlay)
+	vb.sendTextToOverlay(i+"\\n",overlay)
 	time.sleep(int(sys.argv[1]))
 
-	lib.turnOverlay(False,overlay)
+	vb.turnOverlay(False,overlay)
