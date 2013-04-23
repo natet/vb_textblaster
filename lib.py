@@ -37,7 +37,7 @@ class VidBlaster:
 			o="off"
 		self.sendCommand("""apiwrite %s, %s, 1\n"""%(overlay,o))
 
-vb = VidBlaster()
+#vb = VidBlaster()
 
 # These functions exist to keep compatibility with the original scripts
 # because I ran out of time.
