@@ -22,17 +22,19 @@ if __name__ == "__main__":
 	chunks = ["\\n".join(i) for i in t]
 	chunks = [string.replace(i,",","\\x2c") for i in chunks]
 
-	lib.sendTextToOverlay("\\x20",overlay)
-	lib.turnOverlay(True,overlay)
+	vb = lib.VidBlaster()
+
+	vb.sendTextToOverlay("\\x20",overlay)
+	vb.turnOverlay(True,overlay)
 
 	try:
 		for c in chunks:
 			print "Press return to send Next Line: ",c
 			inp = raw_input()
-			lib.sendTextToOverlay(c,overlay)
+			vb.sendTextToOverlay(c,overlay)
 	except KeyboardInterrupt:
-		lib.turnOverlay(False,overlay)
+		vb.turnOverlay(False,overlay)
 
 	print "Press enter for clear song"
 	inp = raw_input()
-	lib.turnOverlay(False,overlay)
+	vb.turnOverlay(False,overlay)

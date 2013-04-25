@@ -37,6 +37,14 @@ class VidBlaster:
 			o="off"
 		self.sendCommand("""apiwrite %s, %s, 1\n"""%(overlay,o))
 
+	def sendPNGToOverlay(self,stream,overlay):
+		self.sock.send("""apiwrite %s, file, [png]\n"""%(overlay))
+		print self.sock.recv(4096)
+		d=stream.read(1024)
+		while d:
+			self.sock.send(d)
+			d=stream.read(1024)
+		
 #vb = VidBlaster()
 
 # These functions exist to keep compatibility with the original scripts

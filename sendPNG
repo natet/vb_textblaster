@@ -8,5 +8,5 @@ overlay="Video Overlay 1"
 
 if __name__ == "__main__":
 	vb=lib.VidBlaster()
-	vb.sendTextToOverlay(' '.join(sys.argv[1:]),overlay)
+	vb.sendPNGToOverlay(open(sys.argv[1]),overlay)
 
