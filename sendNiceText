@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+import sys
+import lib
+import string
+
+overlay="Video Overlay 1"
+
+if __name__ == "__main__":
+	vb = lib.VidBlaster()
+	img = lib.genTextPNG(' '.join(sys.argv[1:]))
+	vb.sendPNGToOverlay(img.make_blob(format="png"),overlay)
