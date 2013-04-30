@@ -1,0 +1,167 @@
+#!/usr/bin/env python
+
+import kivy
+kivy.require('1.6.0') # replace with your current kivy version !
+
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.button import Button
+from kivy.app import App
+from kivy.properties import ObjectProperty, StringProperty, NumericProperty
+from kivy.clock import Clock
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.filechooser import FileChooserIconView, FileChooserListView
+from kivy.uix.popup import Popup
+from kivy.factory import Factory
+
+import lib
+import time
+import string
+import os
+import os.path
+import json
+
+class LoadDialog(FloatLayout):
+	load = ObjectProperty(None)
+	cancel = ObjectProperty(None)
+
+class SaveDialog(FloatLayout):
+	save = ObjectProperty(None)
+	text_input = ObjectProperty(None)
+	cancel = ObjectProperty(None)
+
+class TextController(TabbedPanel):
+	vb=None
+	timeout = ObjectProperty(None)
+	host = ObjectProperty(None)
+	port = ObjectProperty(None)
+	overlay = ObjectProperty(None)
+	overlayGrid = ObjectProperty(None)
+	loadfile = ObjectProperty(None)
+	savefile = ObjectProperty(None)
+	text_input = ObjectProperty(None)
+	
+	def setup(self):
+		self.vb=lib.VidBlaster(self.host.text,self.port.text)	
+
+	def clear_action(self,*args):
+		if not self.vb: self.setup()
+		print 'clear'
+		self.vb.turnOverlay(False,self.overlay.text)
+
+	def do_action(self,args):
+		if not self.vb: self.setup()
+		o=self.overlay.text
+		print 'timeout',self.timeout.text
+		print 'action',args[0].text
+		self.vb.sendTextToOverlay("\\x20",o)
+		self.vb.turnOverlay(True,o)
+		i = string.replace(args[0].text,",","\\x2c")
+		i = string.replace(i,"\n","\\n")
+		self.vb.sendTextToOverlay(i+"\\n",o)
+		#probably should set a timer to release this
+		Clock.schedule_once(self.clear_action,int(self.timeout.text))
+		print "done"
+
+	def save_settings(self,args):
+		f=open(os.path.expanduser("~")+os.sep+".tb_settings","w")
+		f.write("host=%s\n"%(self.host.text))
+		f.write("port=%s\n"%(self.port.text))
+		f.write("overlay=%s\n"%(self.overlay.text))
+		f.write("timeout=%s\n"%(self.timeout.text))
+		f.close()
+
+	def load_settings(self,args):
+		print("LOAD not implemented")
+
+	def send_text(self,args):
+		print args.infotext.text
+		if not self.vb: self.setup()
+		o=self.overlay.text
+		print 'timeout',self.timeout.text
+		print 'action',args[0].text
+		self.vb.sendTextToOverlay("\\x20",o)
+		self.vb.turnOverlay(True,o)
+		i = string.replace(args[0].text,",","\\x2c")
+		i = string.replace(i,"\n","\\n")
+		self.vb.sendTextToOverlay(i+"\\n",o)
+		#probably should set a timer to release this
+		Clock.schedule_once(self.clear_action,int(self.timeout.text))
+		print "done"
+		
+	def add_text_line(self):
+		box = BoxLayout(orientation='horizontal')
+		box.size_hint_y = None
+		box.height = 70
+		
+		t = TextInput()
+		t.size_hint_x = 0.8
+		box.add_widget(t)
+		box.overlayText=t
+		
+		b = Button(text="Send",height=60)
+		b.size_hint_x = 0.2
+		b.size_hint_y = 0.8
+		b.bind(on_release=self.send_text)
+		b.infotext=t
+		box.add_widget(b)
+		
+		self.overlayGrid.add_widget(box)
+		return t
+		
+	def dismiss_popup(self):
+		self._popup.dismiss()
+
+	def show_load(self):
+		content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
+		self._popup.open()
+
+	def show_save(self):
+		content = SaveDialog(save=self.save, cancel=self.dismiss_popup)
+		self._popup = Popup(title="Save file", content=content, size_hint=(0.9, 0.9))
+		self._popup.open()
+
+	def load(self, path, filename):
+		print "load",path, filename,os.path.join(path, filename[0])
+		strings = json.load(open(os.path.join(path, filename[0])))
+		
+		for s in strings:
+			b = self.add_text_line()
+			b.text = s 
+		
+		self.dismiss_popup()
+
+	def save(self, path, filename):
+		print "save", path, filename,os.path.join(path, filename)
+		strings=[]
+		for i in self.overlayGrid.children:
+			try:
+				print i.overlayText.text
+				strings.append(i.overlayText.text)
+			except AttributeError:
+				print "blip"
+				pass
+		strings.reverse()
+		json.dump(strings,open(os.path.join(path, filename), 'w'))
+		
+		self.dismiss_popup()		
+
+class OverlayButton(Button):
+	pass
+
+class TextControllerApp(App):
+
+	def build(self):
+		return TextController(info='yo')
+
+Factory.register('LoadDialog', cls=LoadDialog)
+Factory.register('SaveDialog', cls=SaveDialog)
+
+if __name__ == '__main__':
+	from kivy.config import Config
+	Config.set('graphics', 'width', '400')
+	#Config.set('graphics', 'height', '600')
+	TextControllerApp().run()
+

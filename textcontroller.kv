@@ -1,0 +1,118 @@
+#:kivy 1.0
+
+[OverlayButton@Button]:
+	text: 'Test Button'
+	size_hint: (0.75,None)
+	height: 75
+
+<TextController>:
+	text: "fun"
+	do_default_tab: False
+	timeout: timeout
+	port: port
+	host: host
+	overlay: overlay
+	overlayGrid: g_layout
+	
+
+	TabbedPanelItem:
+		text: "Overlays"
+
+		ScrollView:
+			do_scroll_x: False
+			GridLayout:
+				id: g_layout
+				cols: 1
+				BoxLayout:
+					orientation: 'horizontal'
+					height: 50
+					size_hint_y: None
+					Button:
+						text: 'Add'
+						on_release: root.add_text_line()
+					Button:
+						text: 'Load'
+						on_release: root.show_load()
+					Button:
+						text: 'Save'
+						on_release: root.show_save()
+				
+	TabbedPanelItem:
+		text: 'Settings'
+		GridLayout:
+			cols: 2
+			Label:
+				text: 'VidBlaster Host IP'
+			TextInput:
+				id: host
+				text: '10.187.24.124'
+			Label:
+				text: 'VidBlaster Host port'
+			TextInput:
+				id: port
+				text: '9998'
+			Label:
+				text: 'VidBlaster Overlay'
+			TextInput:
+				id: overlay
+				text: 'Video Overlay 1'
+			Label:
+				text: 'Timeout for Overlays'
+			TextInput:
+				id: timeout
+				text: '10'
+				multiline: False
+			Button:
+				text: "load"
+				on_release: root.show_load()
+			Button:
+				text: "save"
+				on_release: root.show_save()
+				
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+<SaveDialog>:
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
+
