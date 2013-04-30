@@ -64,16 +64,20 @@ class TextController(TabbedPanel):
 		Clock.schedule_once(self.clear_action,int(self.timeout.text))
 		print "done"
 
-	def save_settings(self,args):
-		f=open(os.path.expanduser("~")+os.sep+".tb_settings","w")
-		f.write("host=%s\n"%(self.host.text))
-		f.write("port=%s\n"%(self.port.text))
-		f.write("overlay=%s\n"%(self.overlay.text))
-		f.write("timeout=%s\n"%(self.timeout.text))
-		f.close()
+	def save_settings(self):
+		d={}
+		d["host"]=self.host.text
+		d["port"]=self.port.text
+		d["overlay"]=self.overlay.text
+		d["timeout"]=self.timeout.text
+		json.dump(d,open(os.path.expanduser("~")+os.sep+".tb_settings","w"))
 
-	def load_settings(self,args):
-		print("LOAD not implemented")
+	def load_settings(self):
+		d = json.load(open(os.path.expanduser("~")+os.sep+".tb_settings","r"))
+		self.host.text = d["host"]
+		self.port.text = d["port"]
+		self.overlay.text = d["overlay"]
+		self.timeout.text = d["timeout"]
 
 	def send_text(self,args):
 		print args.infotext.text
