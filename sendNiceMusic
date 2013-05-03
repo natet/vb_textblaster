@@ -21,6 +21,10 @@ if __name__ == "__main__":
 	t = zip(text[0::2],text[1::2])
 	chunks = ["\n".join(i) for i in t]
 	#chunks = [string.replace(i,",","\\x2c") for i in chunks]
+	
+	print "Pre-Generating Overlay Images" 
+	pics = [(lib.genTextPNG(c,fsize=40).make_blob(format="png"),c) for c in chunks] 
+	print "Pre-Generating Done"	
 
 	vb = lib.VidBlaster()
 
@@ -29,14 +33,12 @@ if __name__ == "__main__":
 	vb.sendPNGToOverlay(img.make_blob(format="png"),overlay)
 	vb.turnOverlay(True,overlay)
 
+
 	try:
-		for c in chunks:
+		for p,c in pics:
 			print "Press return to send Next: -",c,"-"
 			inp = raw_input()
-			#vb.sendTextToOverlay(c,overlay)
-			img = lib.genTextPNG(c)
-			img.save(filename="debug.png")
-			vb.sendPNGToOverlay(img.make_blob(format="png"),overlay)
+			vb.sendPNGToOverlay(p,overlay)
 	except KeyboardInterrupt:
 		vb.turnOverlay(False,overlay)
 

@@ -18,25 +18,32 @@
 	TabbedPanelItem:
 		text: "Overlays"
 
-		ScrollView:
-			do_scroll_x: False
-			GridLayout:
-				id: g_layout
-				cols: 1
-				BoxLayout:
-					orientation: 'horizontal'
-					height: 50
-					size_hint_y: None
-					Button:
-						text: 'Add'
-						on_release: root.add_text_line()
-					Button:
-						text: 'Load'
-						on_release: root.show_load()
-					Button:
-						text: 'Save'
-						on_release: root.show_save()
-				
+		GridLayout:
+			cols:1
+			BoxLayout:
+				orientation: 'horizontal'
+				height: 50
+				size_hint_y: None
+				Button:
+					text: 'Add'
+					on_release: root.add_text_line()
+				Button:
+					text: 'Load'
+					on_release: root.show_load()
+				Button:
+					text: 'Save'
+					on_release: root.show_save()
+			ScrollView:
+				do_scroll_x: False
+				#size_hint_y: None
+				#size_hint_x: None
+				GridLayout:
+					id: g_layout
+					cols: 1
+					#size_hint_x: None
+					size_hint_y: None	
+					spacing: 5
+					
 	TabbedPanelItem:
 		text: 'Settings'
 		GridLayout:

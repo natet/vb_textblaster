@@ -41,6 +41,13 @@ class TextController(TabbedPanel):
 	loadfile = ObjectProperty(None)
 	savefile = ObjectProperty(None)
 	text_input = ObjectProperty(None)
+
+	def __init__(self,**kwargs):
+		TabbedPanel.__init__(self)
+		self.overlayGrid.bind(minimum_height=self.overlayGrid.setter('height'))
+		self.load_settings()
+		self.blankOverlay = lib.genTextPNG('').make_blob(format="png")
+
 	
 	def setup(self):
 		self.vb=lib.VidBlaster(self.host.text,self.port.text)	
@@ -84,13 +91,17 @@ class TextController(TabbedPanel):
 		if not self.vb: self.setup()
 		o=self.overlay.text
 		print 'timeout',self.timeout.text
-		print 'action',args[0].text
+		print 'action',args.text
 		self.vb.sendTextToOverlay("\\x20",o)
+		self.vb.sendPNGToOverlay(self.blankOverlay,o)
 		self.vb.turnOverlay(True,o)
-		i = string.replace(args[0].text,",","\\x2c")
-		i = string.replace(i,"\n","\\n")
-		self.vb.sendTextToOverlay(i+"\\n",o)
+		#i = string.replace(args.text,",","\\x2c")
+		i = string.replace(args.text,"\n","\\n")
+		#self.vb.sendTextToOverlay(i+"\\n",o)
+		img = lib.genTextPNG(args.infotext.text)
+		self.vb.sendPNGToOverlay(img.make_blob(format="png"),o)
 		#probably should set a timer to release this
+		Clock.unschedule(self.clear_action)
 		Clock.schedule_once(self.clear_action,int(self.timeout.text))
 		print "done"
 		
@@ -131,6 +142,7 @@ class TextController(TabbedPanel):
 		print "load",path, filename,os.path.join(path, filename[0])
 		strings = json.load(open(os.path.join(path, filename[0])))
 		
+		self.overlayGrid.clear_widgets()
 		for s in strings:
 			b = self.add_text_line()
 			b.text = s 
