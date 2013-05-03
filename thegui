@@ -36,6 +36,7 @@ class TextController(TabbedPanel):
 	timeout = ObjectProperty(None)
 	host = ObjectProperty(None)
 	port = ObjectProperty(None)
+	basepath = ObjectProperty(None)
 	overlay = ObjectProperty(None)
 	overlayGrid = ObjectProperty(None)
 	loadfile = ObjectProperty(None)
@@ -77,14 +78,19 @@ class TextController(TabbedPanel):
 		d["port"]=self.port.text
 		d["overlay"]=self.overlay.text
 		d["timeout"]=self.timeout.text
+		d["basepath"]=self.basepath.text
 		json.dump(d,open(os.path.expanduser("~")+os.sep+".tb_settings","w"))
 
 	def load_settings(self):
 		d = json.load(open(os.path.expanduser("~")+os.sep+".tb_settings","r"))
-		self.host.text = d["host"]
-		self.port.text = d["port"]
-		self.overlay.text = d["overlay"]
-		self.timeout.text = d["timeout"]
+		try:
+				self.host.text = d["host"]
+				self.port.text = d["port"]
+				self.overlay.text = d["overlay"]
+				self.timeout.text = d["timeout"]
+				self.basepath.text = d["basepath"]
+		except:
+			pass
 
 	def send_text(self,args):
 		print args.infotext.text
@@ -169,8 +175,11 @@ class OverlayButton(Button):
 
 class TextControllerApp(App):
 
+	def get_base_path(self):
+		return self.tc.basepath.text
 	def build(self):
-		return TextController(info='yo')
+		self.tc = TextController(info='yo')
+		return self.tc
 
 Factory.register('LoadDialog', cls=LoadDialog)
 Factory.register('SaveDialog', cls=SaveDialog)

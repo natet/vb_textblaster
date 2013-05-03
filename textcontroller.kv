@@ -11,6 +11,7 @@
 	timeout: timeout
 	port: port
 	host: host
+	basepath: basepath
 	overlay: overlay
 	overlayGrid: g_layout
 	
@@ -69,6 +70,12 @@
 				id: timeout
 				text: '10'
 				multiline: False
+			Label:
+				text: 'Base Directory For Files'
+			TextInput:
+				id: basepath
+				text: '~'
+				multiline: False
 			Button:
 				text: "load"
 				on_release: root.load_settings()
@@ -84,6 +91,7 @@
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
+			path: app.get_base_path()
 
         BoxLayout:
             size_hint_y: None
@@ -105,6 +113,7 @@
         FileChooserListView:
             id: filechooser
             on_selection: text_input.text = self.selection and self.selection[0] or ''
+			path: app.get_base_path()
 
         TextInput:
             id: text_input
