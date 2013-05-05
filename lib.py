@@ -59,7 +59,7 @@ def genTextPNG(text,font="/usr/share/fonts/type1/gsfonts/c059016l.pfb",fsize=48)
 	img.caption(text,font=fontblack,gravity='center',left=8,top=8)
 	img.caption(text,font=fontwhite,gravity='center')
 	final = Image(width=1280,height=720)
-	final.composite(img,90,530)
+	final.composite(img,0,530)
 	return final
 
 
