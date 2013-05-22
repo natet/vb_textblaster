@@ -53,13 +53,13 @@ def genTextPNG(text,font="/usr/share/fonts/type1/gsfonts/c059016l.pfb",fsize=48)
 	from wand.color import Color
 
 	# convert -size 1000x180 xc:transparent -fx 0 -channel A -fx 'cos(0.6*pi*(i/w-0.5))-0.0' background.png
-	img=Image(filename="background.png")
+	img=Image(filename="background1280.png")
 	fontwhite=Font(path=font,color=Color("white"),size=fsize,antialias=True)
 	fontblack=Font(path=font,color=Color("black"),size=fsize,antialias=True)
 	img.caption(text,font=fontblack,gravity='center',left=8,top=8)
 	img.caption(text,font=fontwhite,gravity='center')
 	final = Image(width=1280,height=720)
-	final.composite(img,90,530)
+	final.composite(img,0,530)
 	return final
 
 

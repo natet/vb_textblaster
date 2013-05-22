@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	pics = [(lib.genTextPNG(c,fsize=40).make_blob(format="png"),c) for c in chunks] 
 	print "Pre-Generating Done"	
 
-	vb = lib.VidBlaster()
+	vb = lib.VidBlaster("10.187.24.113")
 
 	vb.sendTextToOverlay("\\x20",overlay)
 	img = lib.genTextPNG('')
